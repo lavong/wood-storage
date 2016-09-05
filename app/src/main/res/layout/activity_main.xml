@@ -7,10 +7,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.jordylangen.woodstorage.MainActivity">
+    tools:context="com.jordylangen.woodstorage.example.MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/button_open_overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="open overview"
+        android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>

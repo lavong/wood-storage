@@ -1,30 +1,30 @@
 package com.jordylangen.woodstorage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.subjects.PublishSubject;
 
-public class WoodStorageFactory {
+public final class WoodStorageFactory {
 
-    private static final List<WoodStorageWorker> workers = new ArrayList<>();
+    private static WoodStorageWorker WORKER;
 
-    public static WoodStorageTree create() {
+    public static WoodStorageTree getInstance() {
+        return getInstance(new StorageFactory());
+    }
+
+    public static WoodStorageTree getInstance(StorageFactory storageFactory) {
         PublishSubject<LogStatement> publishSubject = PublishSubject.create();
         WoodStorageTree tree = new WoodStorageTree(publishSubject);
-        WoodStorageWorker worker = new WoodStorageWorker(publishSubject.asObservable());
-        worker.start();
 
-        workers.add(worker);
+        if (WORKER != null) {
+            stop();
+        }
+
+        WORKER = new WoodStorageWorker(storageFactory.create(), publishSubject.asObservable());
+        WORKER.start();
 
         return tree;
     }
 
     public static synchronized void stop() {
-        for (WoodStorageWorker worker : workers) {
-            worker.stop();
-        }
-
-        workers.clear();
+        WORKER.stop();
     }
 }

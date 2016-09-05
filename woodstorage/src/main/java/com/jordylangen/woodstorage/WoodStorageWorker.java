@@ -7,10 +7,12 @@ import rx.schedulers.Schedulers;
 
 public class WoodStorageWorker implements Action1<LogStatement> {
 
+    private Storage storage;
     private Observable<LogStatement> logObserver;
     private Subscription subscription;
 
-    public WoodStorageWorker(Observable<LogStatement> logObserver) {
+    public WoodStorageWorker(Storage storage, Observable<LogStatement> logObserver) {
+        this.storage = storage;
         this.logObserver = logObserver;
     }
 
@@ -26,6 +28,10 @@ public class WoodStorageWorker implements Action1<LogStatement> {
 
     @Override
     public void call(LogStatement logStatement) {
+        storage.add(logStatement);
+    }
 
+    public Storage getStorage() {
+        return storage;
     }
 }
