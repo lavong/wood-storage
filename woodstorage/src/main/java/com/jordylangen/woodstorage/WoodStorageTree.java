@@ -3,7 +3,7 @@ package com.jordylangen.woodstorage;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class WoodStorageTree extends Timber.Tree {
+public class WoodStorageTree extends Timber.DebugTree {
 
     private PublishSubject<LogStatement> logStatementPublishSubject;
 

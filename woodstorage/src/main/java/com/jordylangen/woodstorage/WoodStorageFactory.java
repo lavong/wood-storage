@@ -1,16 +1,18 @@
 package com.jordylangen.woodstorage;
 
+import android.content.Context;
+
 import rx.subjects.PublishSubject;
 
 public final class WoodStorageFactory {
 
     private static WoodStorageWorker WORKER;
 
-    public static WoodStorageTree getInstance() {
-        return getInstance(new StorageFactory());
+    public static WoodStorageTree getInstance(Context context) {
+        return getInstance(context, new StorageFactory());
     }
 
-    public static WoodStorageTree getInstance(StorageFactory storageFactory) {
+    public static WoodStorageTree getInstance(Context context, StorageFactory storageFactory) {
         PublishSubject<LogStatement> publishSubject = PublishSubject.create();
         WoodStorageTree tree = new WoodStorageTree(publishSubject);
 
@@ -18,7 +20,7 @@ public final class WoodStorageFactory {
             stop();
         }
 
-        WORKER = new WoodStorageWorker(storageFactory.create(), publishSubject.asObservable());
+        WORKER = new WoodStorageWorker(storageFactory.create(context), publishSubject.asObservable());
         WORKER.start();
 
         return tree;

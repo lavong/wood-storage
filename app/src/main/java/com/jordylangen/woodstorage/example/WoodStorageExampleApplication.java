@@ -13,6 +13,6 @@ public class WoodStorageExampleApplication extends Application {
         super.onCreate();
 
         Timber.plant(new Timber.DebugTree());
-        Timber.plant(WoodStorageFactory.getInstance());
+        Timber.plant(WoodStorageFactory.getInstance(this));
     }
 }
