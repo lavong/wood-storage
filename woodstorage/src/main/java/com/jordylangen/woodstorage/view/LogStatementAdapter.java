@@ -1,6 +1,8 @@
 package com.jordylangen.woodstorage.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +31,31 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
     @Override
     public void onBindViewHolder(LogStatementViewHolder holder, int position) {
         LogStatement log = logs.get(position);
+        holder.tagTextView.setText(log.getTag());
         holder.messageTextView.setText(log.getMessage());
+        holder.priorityTextView.setText(getPriorityTextResource(log));
+
+        boolean hasException = !TextUtils.isEmpty(log.getException());
+        holder.exceptionTextView.setVisibility(hasException ? View.VISIBLE : View.GONE);
+
+        if (hasException) {
+            holder.exceptionTextView.setText(log.getException());
+        }
+    }
+
+    private int getPriorityTextResource(LogStatement log) {
+        switch (log.getPriority()) {
+            case Log.DEBUG:
+                return R.string.log_level_debug;
+            case Log.INFO:
+                return R.string.log_level_info;
+            case Log.WARN:
+                return R.string.log_level_warn;
+            case Log.ERROR:
+                return R.string.log_level_error;
+            default:
+                return R.string.log_level_verbose;
+        }
     }
 
     @Override
@@ -44,11 +70,18 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
 
     public class LogStatementViewHolder extends RecyclerView.ViewHolder {
 
+        private TextView tagTextView;
+        private TextView priorityTextView;
         private TextView messageTextView;
+        private TextView exceptionTextView;
 
         public LogStatementViewHolder(View itemView) {
             super(itemView);
+
+            tagTextView = (TextView) itemView.findViewById(R.id.log_tag);
+            priorityTextView = (TextView) itemView.findViewById(R.id.log_priority);
             messageTextView = (TextView) itemView.findViewById(R.id.log_message);
+            exceptionTextView = (TextView) itemView.findViewById(R.id.log_exception);
         }
     }
 }

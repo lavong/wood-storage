@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Wood Storage</string>
+
+    <string name="log_level_debug">debug</string>
+    <string name="log_level_verbose">verbose</string>
+    <string name="log_level_info">info</string>
+    <string name="log_level_warn">warning</string>
+    <string name="log_level_error">error</string>
 </resources>

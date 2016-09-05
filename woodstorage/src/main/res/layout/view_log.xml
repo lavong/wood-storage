@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/row_padding"
+    android:paddingBottom="@dimen/row_padding">
+
+    <TextView
+        android:id="@+id/log_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/text_padding"
+        android:paddingEnd="@dimen/text_padding"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/log_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/log_tag"
+        android:layout_toRightOf="@+id/log_tag"/>
 
     <TextView
         android:id="@+id/log_message"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/log_tag" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/log_exception"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_below="@+id/log_message"/>
+
+</RelativeLayout>
