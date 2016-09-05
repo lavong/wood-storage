@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.jordylangen.woodstorage.LogStatement;
 import com.jordylangen.woodstorage.R;
+import com.jordylangen.woodstorage.utils.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
         if (hasException) {
             holder.exceptionTextView.setText(log.getException());
         }
+
+        holder.colorIndicatorView.setBackgroundColor(ColorUtils.randomColor());
     }
 
     private int getPriorityTextResource(LogStatement log) {
@@ -70,6 +73,7 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
 
     public class LogStatementViewHolder extends RecyclerView.ViewHolder {
 
+        private View colorIndicatorView;
         private TextView tagTextView;
         private TextView priorityTextView;
         private TextView messageTextView;
@@ -78,6 +82,7 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
         public LogStatementViewHolder(View itemView) {
             super(itemView);
 
+            colorIndicatorView = itemView.findViewById(R.id.log_color_indicator);
             tagTextView = (TextView) itemView.findViewById(R.id.log_tag);
             priorityTextView = (TextView) itemView.findViewById(R.id.log_priority);
             messageTextView = (TextView) itemView.findViewById(R.id.log_message);
