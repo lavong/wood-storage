@@ -39,7 +39,7 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
 
     public void add(LogStatement logStatement) {
         logs.add(logStatement);
-        notifyDataSetChanged();
+        notifyItemInserted(logs.size());
     }
 
     public class LogStatementViewHolder extends RecyclerView.ViewHolder {
