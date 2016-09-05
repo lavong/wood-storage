@@ -1,12 +1,12 @@
 package com.jordylangen.woodstorage.view;
 
-public interface Contract {
+interface Contract {
 
-    public interface View {
+    interface View {
 
     }
 
-    public interface Presenter<V extends View> {
+    interface Presenter<V extends View> {
 
         void setup(V view);
 

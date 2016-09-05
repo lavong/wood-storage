@@ -27,4 +27,8 @@ public final class WoodStorageFactory {
     public static synchronized void stop() {
         WORKER.stop();
     }
+
+    public static WoodStorageWorker getWorker() {
+        return WORKER;
+    }
 }

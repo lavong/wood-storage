@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 public class InMemoryStorage implements Storage {
 
@@ -28,18 +26,6 @@ public class InMemoryStorage implements Storage {
 
     @Override
     public Observable<LogStatement> load() {
-        return Observable.from(logStatements)
-                .toSortedList(new Func2<LogStatement, LogStatement, Integer>() {
-                    @Override
-                    public Integer call(LogStatement left, LogStatement right) {
-                        return right.getTimeStamp().compareTo(left.getTimeStamp());
-                    }
-                })
-                .flatMapIterable(new Func1<List<LogStatement>, Iterable<LogStatement>>() {
-                    @Override
-                    public Iterable<LogStatement> call(List<LogStatement> logStatements) {
-                        return logStatements;
-                    }
-                });
+        return Observable.from(logStatements);
     }
 }

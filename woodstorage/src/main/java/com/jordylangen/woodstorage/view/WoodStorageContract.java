@@ -1,12 +1,15 @@
 package com.jordylangen.woodstorage.view;
 
-public interface WoodStorageContract {
+import com.jordylangen.woodstorage.LogStatement;
 
-    public interface View extends Contract.View {
+interface WoodStorageContract {
 
+    interface View extends Contract.View {
+
+        void show(LogStatement logStatement);
     }
 
-    public interface Presenter extends Contract.Presenter<View> {
+    interface Presenter extends Contract.Presenter<View> {
 
     }
 }
