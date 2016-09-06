@@ -8,6 +8,9 @@ import android.widget.FrameLayout;
 
 import com.jordylangen.woodstorage.LogStatement;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class WoodStorageView extends FrameLayout implements WoodStorageContract.View {
 
     private WoodStorageContract.Presenter presenter;

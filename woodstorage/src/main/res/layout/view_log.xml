@@ -27,11 +27,24 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/log_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingEnd="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
+            android:layout_toEndOf="@+id/log_tag"
+            android:layout_toRightOf="@+id/log_tag"
+            android:textSize="12sp" />
+
+        <TextView
             android:id="@+id/log_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/log_tag"
-            android:layout_toRightOf="@+id/log_tag" />
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/log_timestamp"
+            android:layout_toRightOf="@+id/log_timestamp"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/log_message"
