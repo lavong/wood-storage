@@ -30,5 +30,6 @@ class InMemoryStorageSpec extends RxSpecification {
         !logs.isEmpty()
         logs.size() == InMemoryStorage.MAX_ITEMS
         logs[0].message == Integer.toString(InMemoryStorage.MAX_ITEMS)
+        logs[InMemoryStorage.MAX_ITEMS - 1].message == Integer.toString((InMemoryStorage.MAX_ITEMS * 2) - 1)
     }
 }
