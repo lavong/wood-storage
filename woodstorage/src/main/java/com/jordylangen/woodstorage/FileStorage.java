@@ -5,21 +5,25 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subjects.ReplaySubject;
 
 public class FileStorage implements Storage {
 
     private static final String TAG = "FileStorage";
 
     private File file;
+    private ReplaySubject<LogStatement> replaySubject;
 
     public FileStorage(String pathToFile) {
         file = new File(pathToFile);
@@ -31,15 +35,49 @@ public class FileStorage implements Storage {
             FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter out = new BufferedWriter(fileWriter);
             out.write(logStatement.serialize());
+            out.write("\n");
             out.flush();
             out.close();
         } catch (IOException exception) {
             Log.e(TAG, "could not write to file at " + file.getAbsolutePath(), exception);
         }
+
+        if (replaySubject != null) {
+            replaySubject.onNext(logStatement);
+        }
     }
 
     @Override
     public Observable<LogStatement> load() {
+        if (replaySubject == null) {
+            replaySubject = ReplaySubject.create();
+
+            Observable.fromCallable(new Callable<List<LogStatement>>() {
+                @Override
+                public List<LogStatement> call() throws Exception {
+                    return loadLogsFromFile();
+                }
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<List<LogStatement>, Observable<LogStatement>>() {
+                        @Override
+                        public Observable<LogStatement> call(List<LogStatement> logStatements) {
+                            return Observable.from(logStatements);
+                        }
+                    })
+                    .subscribe(new Action1<LogStatement>() {
+                        @Override
+                        public void call(LogStatement logStatement) {
+                            replaySubject.onNext(logStatement);
+                        }
+                    });
+        }
+
+        return replaySubject.asObservable();
+    }
+
+    private List<LogStatement> loadLogsFromFile() {
         List<LogStatement> logs = new ArrayList<>();
 
         try {
@@ -53,9 +91,9 @@ public class FileStorage implements Storage {
             }
         } catch (IOException exception) {
             Log.e(TAG, "could not write to file at " + file.getAbsolutePath(), exception);
-            return Observable.empty();
+            return new ArrayList<>();
         }
 
-        return Observable.from(logs);
+        return logs;
     }
 }
