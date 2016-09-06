@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -21,6 +22,8 @@ import rx.subjects.ReplaySubject;
 public class FileStorage implements Storage {
 
     private static final String TAG = "FileStorage";
+    private static final int MAX_LOG_COUNT = 1028;
+    private static final int DELETE_COUNT = 256;
 
     private File file;
     private ReplaySubject<LogStatement> replaySubject;
@@ -31,6 +34,68 @@ public class FileStorage implements Storage {
 
     @Override
     public synchronized void add(LogStatement logStatement) {
+        int lineCount = getLineCount();
+        ensureMaxLineCount(lineCount);
+        write(logStatement);
+
+        if (replaySubject != null) {
+            replaySubject.onNext(logStatement);
+        }
+    }
+
+    private synchronized int getLineCount() {
+        try {
+            FileReader fileReader = new FileReader(file);
+            LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
+            while ((lineNumberReader.readLine()) != null) ;
+            return lineNumberReader.getLineNumber();
+        } catch (IOException exception) {
+            Log.e(TAG, "could not get the line count for " + file.getAbsolutePath(), exception);
+            return -1;
+        }
+    }
+
+    private synchronized void ensureMaxLineCount(int currentLineCount) {
+        if (currentLineCount < MAX_LOG_COUNT) {
+            return;
+        }
+
+        int startAtLine = currentLineCount - (MAX_LOG_COUNT - DELETE_COUNT);
+        StringBuilder stringBuffer = new StringBuilder();
+
+        try {
+            int lineCounter = 0;
+
+            FileReader fileReader = new FileReader(file);
+            BufferedReader in = new BufferedReader(fileReader);
+
+            String line;
+            while ((line = in.readLine()) != null) {
+                lineCounter++;
+
+                if (lineCounter >= startAtLine) {
+                    stringBuffer.append(line);
+                    stringBuffer.append("\n");
+                }
+            }
+
+            in.close();
+
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter out = new BufferedWriter(fileWriter);
+
+            // do we need to optimize this? write a set of chars?
+            out.write(stringBuffer.toString());
+
+            out.flush();
+            out.close();
+
+        } catch (IOException exception) {
+            Log.e(TAG, "could not trim the file " + file.getAbsolutePath(), exception);
+        }
+    }
+
+    private synchronized void write(LogStatement logStatement) {
         try {
             FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter out = new BufferedWriter(fileWriter);
@@ -40,10 +105,6 @@ public class FileStorage implements Storage {
             out.close();
         } catch (IOException exception) {
             Log.e(TAG, "could not write to file at " + file.getAbsolutePath(), exception);
-        }
-
-        if (replaySubject != null) {
-            replaySubject.onNext(logStatement);
         }
     }
 
@@ -82,7 +143,7 @@ public class FileStorage implements Storage {
 
         try {
             FileReader fileReader = new FileReader(file);
-            BufferedReader in  = new BufferedReader(fileReader);
+            BufferedReader in = new BufferedReader(fileReader);
 
             String line;
             while ((line = in.readLine()) != null) {
