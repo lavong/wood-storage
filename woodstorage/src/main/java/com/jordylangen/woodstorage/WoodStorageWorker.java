@@ -28,7 +28,7 @@ public class WoodStorageWorker implements Action1<LogStatement> {
 
     @Override
     public void call(LogStatement logStatement) {
-        storage.add(logStatement);
+        storage.save(logStatement);
     }
 
     public Storage getStorage() {

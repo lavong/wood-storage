@@ -24,16 +24,23 @@ public class FileStorage implements Storage {
     private static final String TAG = "FileStorage";
     private static final int MAX_LOG_COUNT = 1028;
     private static final int DELETE_COUNT = 256;
+    private static final int DELETE_OFFSET_BY_INDEX_AND_NEW_WRITE = 2;
 
     private File file;
+    private StorageConfig storageConfig;
     private ReplaySubject<LogStatement> replaySubject;
 
-    public FileStorage(String pathToFile) {
-        file = new File(pathToFile);
+    FileStorage(String pathToFile) {
+        this(new StorageConfig(MAX_LOG_COUNT, DELETE_COUNT, pathToFile));
+    }
+
+    public FileStorage(StorageConfig storageConfig) {
+        file = new File(storageConfig.getPathToFile());
+        this.storageConfig = storageConfig;
     }
 
     @Override
-    public synchronized void add(LogStatement logStatement) {
+    public synchronized void save(LogStatement logStatement) {
         int lineCount = getLineCount();
         ensureMaxLineCount(lineCount);
         write(logStatement);
@@ -56,11 +63,11 @@ public class FileStorage implements Storage {
     }
 
     private synchronized void ensureMaxLineCount(int currentLineCount) {
-        if (currentLineCount < MAX_LOG_COUNT) {
+        if (currentLineCount < storageConfig.getMaxLogCount()) {
             return;
         }
 
-        int startAtLine = currentLineCount - (MAX_LOG_COUNT - DELETE_COUNT);
+        int startAtLine = currentLineCount - (storageConfig.getMaxLogCount() - storageConfig.getDeleteCount() - DELETE_OFFSET_BY_INDEX_AND_NEW_WRITE);
         StringBuilder stringBuffer = new StringBuilder();
 
         try {

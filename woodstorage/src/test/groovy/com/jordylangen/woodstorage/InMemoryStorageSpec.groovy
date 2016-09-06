@@ -14,7 +14,7 @@ class InMemoryStorageSpec extends RxSpecification {
     def "should not contain more then max amount of items"() {
         when:
         for (def i = 0; i < InMemoryStorage.MAX_ITEMS * 2; i++) {
-            storage.add(new LogStatement("test", Log.DEBUG, Integer.toString(i), null))
+            storage.save(new LogStatement("test", Log.DEBUG, Integer.toString(i), null))
         }
 
         List<LogStatement> logs = [];

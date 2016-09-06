@@ -16,7 +16,7 @@ public class InMemoryStorage implements Storage {
     }
 
     @Override
-    public void add(LogStatement logStatement) {
+    public void save(LogStatement logStatement) {
         logStatements.add(logStatement);
 
         if (logStatements.size() > MAX_ITEMS) {

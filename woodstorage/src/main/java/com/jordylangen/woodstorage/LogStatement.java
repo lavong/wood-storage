@@ -2,8 +2,10 @@ package com.jordylangen.woodstorage;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class LogStatement {
 
@@ -74,5 +76,33 @@ public class LogStatement {
         }
 
         return new LogStatement(NULL.equals(tag) ? null : tag, priority, NULL.equals(message) ? null : message, timeStamp, NULL.equals(exception) ? null : exception);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[]{tag, priority, message, timeStamp, exception});
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof LogStatement)) {
+            return false;
+        }
+
+        if (this == obj) {
+            return true;
+        }
+
+        LogStatement other = (LogStatement) obj;
+
+        return equals(tag, other.tag) &&
+                equals(priority, other.priority) &&
+                equals(message, other.message) &&
+                equals(DATE_TIME_FORMAT.format(timeStamp), DATE_TIME_FORMAT.format(other.timeStamp)) &&
+                equals(exception, other.exception);
+    }
+
+    private static boolean equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
     }
 }
