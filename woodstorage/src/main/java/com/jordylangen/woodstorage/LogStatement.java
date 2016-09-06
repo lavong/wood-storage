@@ -8,7 +8,10 @@ import java.util.Locale;
 public class LogStatement {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyMMddHHmmss", Locale.ENGLISH);
+
+    private static final String SEPARATOR = "``";
     private static final String NULL = "null";
+
 
     private Date timeStamp;
     private String tag;
@@ -49,11 +52,11 @@ public class LogStatement {
     }
 
     String serialize() {
-        return String.format(Locale.getDefault(), "%s;%d;%s;%s;%s", tag, priority, message, DATE_TIME_FORMAT.format(timeStamp), exception);
+        return tag + SEPARATOR + priority + SEPARATOR + message + SEPARATOR + DATE_TIME_FORMAT.format(timeStamp) + SEPARATOR + exception;
     }
 
     static LogStatement deserialize(String line) {
-        String[] values = line.split(";");
+        String[] values = line.split(SEPARATOR);
 
         String tag = values[0];
         int priority = Integer.parseInt(values[1]);
