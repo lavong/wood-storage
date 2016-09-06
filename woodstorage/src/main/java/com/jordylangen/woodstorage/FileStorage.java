@@ -30,7 +30,6 @@ public class FileStorage implements Storage {
         try {
             FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter out = new BufferedWriter(fileWriter);
-            out.newLine();
             out.write(logStatement.serialize());
             out.flush();
             out.close();
@@ -49,10 +48,6 @@ public class FileStorage implements Storage {
 
             String line;
             while ((line = in.readLine()) != null) {
-                if (line.equals("")) {
-                    continue;
-                }
-
                 LogStatement logStatement = LogStatement.deserialize(line);
                 logs.add(logStatement);
             }
