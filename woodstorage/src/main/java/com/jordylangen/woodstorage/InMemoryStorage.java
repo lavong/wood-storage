@@ -7,7 +7,7 @@ import rx.Observable;
 
 public class InMemoryStorage implements Storage {
 
-    private static final int MAX_ITEMS = 128;
+    static final int MAX_ITEMS = 128;
 
     private List<LogStatement> logStatements;
 
