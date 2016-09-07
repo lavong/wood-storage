@@ -56,7 +56,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
         count * view.add(_ as LogEntry)
     }
 
-    def "should re-add all logs upon sort order inversion and add them again" () {
+    def "should clear all logs upon sort order inversion and add them again inverted" () {
         given:
         def count = 10;
         def logs = []
