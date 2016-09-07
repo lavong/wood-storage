@@ -4,14 +4,17 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.jordylangen.woodstorage.LogStatement;
+import com.jordylangen.woodstorage.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class WoodStorageView extends FrameLayout implements WoodStorageContract.View {
+public class WoodStorageView extends LinearLayout implements WoodStorageContract.View {
 
     private WoodStorageContract.Presenter presenter;
 
@@ -33,13 +36,11 @@ public class WoodStorageView extends FrameLayout implements WoodStorageContract.
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        RecyclerView recyclerView = new RecyclerView(getContext());
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.woodstorage_overview_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new LogStatementAdapter();
         recyclerView.setAdapter(adapter);
-
-        addView(recyclerView);
 
         presenter = (WoodStorageContract.Presenter) PresenterCache.get(getId());
         if (presenter == null) {

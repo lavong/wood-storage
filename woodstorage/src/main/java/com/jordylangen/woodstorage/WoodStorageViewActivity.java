@@ -1,9 +1,9 @@
 package com.jordylangen.woodstorage;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class WoodStorageViewActivity extends Activity {
+public class WoodStorageViewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

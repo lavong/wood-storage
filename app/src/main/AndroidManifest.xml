@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.jordylangen.woodstorage.WoodStorageViewActivity">
+        <activity android:name="com.jordylangen.woodstorage.WoodStorageViewActivity"
+            android:theme="@style/WoodStorageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
