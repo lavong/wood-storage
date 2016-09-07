@@ -28,7 +28,7 @@ public class FileStorage implements Storage {
 
     private File file;
     private StorageConfig storageConfig;
-    private ReplaySubject<LogStatement> replaySubject;
+    private ReplaySubject<LogEntry> replaySubject;
 
     FileStorage(String pathToFile) {
         this(new StorageConfig(MAX_LOG_COUNT, DELETE_COUNT, pathToFile));
@@ -40,13 +40,13 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public synchronized void save(LogStatement logStatement) {
+    public synchronized void save(LogEntry logEntry) {
         int lineCount = getLineCount();
         ensureMaxLineCount(lineCount);
-        write(logStatement);
+        write(logEntry);
 
         if (replaySubject != null) {
-            replaySubject.onNext(logStatement);
+            replaySubject.onNext(logEntry);
         }
     }
 
@@ -102,11 +102,11 @@ public class FileStorage implements Storage {
         }
     }
 
-    private synchronized void write(LogStatement logStatement) {
+    private synchronized void write(LogEntry logEntry) {
         try {
             FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter out = new BufferedWriter(fileWriter);
-            out.write(logStatement.serialize());
+            out.write(logEntry.serialize());
             out.write("\n");
             out.flush();
             out.close();
@@ -116,28 +116,28 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public Observable<LogStatement> load() {
+    public Observable<LogEntry> load() {
         if (replaySubject == null) {
             replaySubject = ReplaySubject.create();
 
-            Observable.fromCallable(new Callable<List<LogStatement>>() {
+            Observable.fromCallable(new Callable<List<LogEntry>>() {
                 @Override
-                public List<LogStatement> call() throws Exception {
+                public List<LogEntry> call() throws Exception {
                     return loadLogsFromFile();
                 }
             })
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<List<LogStatement>, Observable<LogStatement>>() {
+                    .flatMap(new Func1<List<LogEntry>, Observable<LogEntry>>() {
                         @Override
-                        public Observable<LogStatement> call(List<LogStatement> logStatements) {
-                            return Observable.from(logStatements);
+                        public Observable<LogEntry> call(List<LogEntry> logEntries) {
+                            return Observable.from(logEntries);
                         }
                     })
-                    .subscribe(new Action1<LogStatement>() {
+                    .subscribe(new Action1<LogEntry>() {
                         @Override
-                        public void call(LogStatement logStatement) {
-                            replaySubject.onNext(logStatement);
+                        public void call(LogEntry logEntry) {
+                            replaySubject.onNext(logEntry);
                         }
                     });
         }
@@ -145,8 +145,8 @@ public class FileStorage implements Storage {
         return replaySubject.asObservable();
     }
 
-    private List<LogStatement> loadLogsFromFile() {
-        List<LogStatement> logs = new ArrayList<>();
+    private List<LogEntry> loadLogsFromFile() {
+        List<LogEntry> logs = new ArrayList<>();
 
         try {
             FileReader fileReader = new FileReader(file);
@@ -154,8 +154,8 @@ public class FileStorage implements Storage {
 
             String line;
             while ((line = in.readLine()) != null) {
-                LogStatement logStatement = LogStatement.deserialize(line);
-                logs.add(logStatement);
+                LogEntry logEntry = LogEntry.deserialize(line);
+                logs.add(logEntry);
             }
         } catch (IOException exception) {
             Log.e(TAG, "could not write to file at " + file.getAbsolutePath(), exception);

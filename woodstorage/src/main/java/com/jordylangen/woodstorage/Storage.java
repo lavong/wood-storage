@@ -4,7 +4,7 @@ import rx.Observable;
 
 public interface Storage {
 
-    void save(LogStatement logStatement);
+    void save(LogEntry logEntry);
 
-    Observable<LogStatement> load();
+    Observable<LogEntry> load();
 }

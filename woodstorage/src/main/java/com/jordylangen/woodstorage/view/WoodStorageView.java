@@ -4,21 +4,16 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.jordylangen.woodstorage.LogStatement;
+import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class WoodStorageView extends LinearLayout implements WoodStorageContract.View {
 
     private WoodStorageContract.Presenter presenter;
 
-    private LogStatementAdapter adapter;
+    private LogEntryAdapter adapter;
 
     public WoodStorageView(Context context) {
         this(context, null);
@@ -39,7 +34,7 @@ public class WoodStorageView extends LinearLayout implements WoodStorageContract
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.woodstorage_overview_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new LogStatementAdapter();
+        adapter = new LogEntryAdapter();
         recyclerView.setAdapter(adapter);
 
         presenter = (WoodStorageContract.Presenter) PresenterCache.get(getId());
@@ -58,7 +53,17 @@ public class WoodStorageView extends LinearLayout implements WoodStorageContract
     }
 
     @Override
-    public void show(LogStatement logStatement) {
-        adapter.add(logStatement);
+    public void add(LogEntry logEntry) {
+        adapter.add(logEntry);
+    }
+
+    @Override
+    public void addAt(LogEntry logEntry, int index) {
+        adapter.add(logEntry, index);
+    }
+
+    @Override
+    public void clear() {
+        adapter.clear();
     }
 }

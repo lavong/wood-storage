@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.jordylangen.woodstorage.LogStatement;
+import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
 import com.jordylangen.woodstorage.utils.ColorUtils;
 
@@ -19,22 +19,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapter.LogStatementViewHolder> {
+public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryAdapter.LogEntryViewHolder> {
 
     private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
 
-    private List<LogStatement> logs = new ArrayList<>();
+    private List<LogEntry> logs = new ArrayList<>();
     private Map<String, Integer> tagColors = new HashMap<>();
 
     @Override
-    public LogStatementViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public LogEntryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_log, parent, false);
-        return new LogStatementViewHolder(view);
+        return new LogEntryViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(LogStatementViewHolder holder, int position) {
-        LogStatement log = logs.get(position);
+    public void onBindViewHolder(LogEntryViewHolder holder, int position) {
+        LogEntry log = logs.get(position);
         holder.tagTextView.setText(log.getTag());
         holder.messageTextView.setText(log.getMessage());
         holder.priorityTextView.setText(getPriorityTextResource(log));
@@ -58,7 +58,7 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
         holder.colorIndicatorView.setBackgroundColor(color);
     }
 
-    private int getPriorityTextResource(LogStatement log) {
+    private int getPriorityTextResource(LogEntry log) {
         switch (log.getPriority()) {
             case Log.DEBUG:
                 return R.string.log_level_debug;
@@ -78,12 +78,22 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
         return logs.size();
     }
 
-    public void add(LogStatement logStatement) {
-        logs.add(logStatement);
+    public void add(LogEntry logEntry) {
+        logs.add(logEntry);
         notifyItemInserted(logs.size());
     }
 
-    public class LogStatementViewHolder extends RecyclerView.ViewHolder {
+    public void add(LogEntry logEntry, int index) {
+        logs.add(index, logEntry);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        logs.clear();
+        notifyDataSetChanged();
+    }
+
+    public class LogEntryViewHolder extends RecyclerView.ViewHolder {
 
         private View colorIndicatorView;
         private TextView tagTextView;
@@ -92,7 +102,7 @@ public class LogStatementAdapter extends RecyclerView.Adapter<LogStatementAdapte
         private TextView exceptionTextView;
         private TextView timestampTextView;
 
-        public LogStatementViewHolder(View itemView) {
+        public LogEntryViewHolder(View itemView) {
             super(itemView);
 
             colorIndicatorView = itemView.findViewById(R.id.log_color_indicator);

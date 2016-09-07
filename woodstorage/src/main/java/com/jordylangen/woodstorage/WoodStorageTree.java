@@ -5,15 +5,15 @@ import timber.log.Timber;
 
 public class WoodStorageTree extends Timber.DebugTree {
 
-    private PublishSubject<LogStatement> logStatementPublishSubject;
+    private PublishSubject<LogEntry> logStatementPublishSubject;
 
-    WoodStorageTree(PublishSubject<LogStatement> logStatementPublishSubject) {
+    WoodStorageTree(PublishSubject<LogEntry> logStatementPublishSubject) {
         this.logStatementPublishSubject = logStatementPublishSubject;
     }
 
     @Override
     protected void log(int priority, String tag, String message, Throwable t) {
-        LogStatement logStatement = new LogStatement(tag, priority, message, t);
-        logStatementPublishSubject.onNext(logStatement);
+        LogEntry logEntry = new LogEntry(tag, priority, message, t);
+        logStatementPublishSubject.onNext(logEntry);
     }
 }

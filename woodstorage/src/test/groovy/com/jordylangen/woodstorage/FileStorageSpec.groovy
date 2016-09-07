@@ -36,16 +36,16 @@ class FileStorageSpec extends RxSpecification {
         given:
         def pathToFile = createFileForCurrentTest()
         def fileStorage = new FileStorage(new StorageConfig(10, 2, pathToFile))
-        def log = new LogStatement("fileStorageSpec", Log.DEBUG, "first log", null)
+        def log = new LogEntry("fileStorageSpec", Log.DEBUG, "first log", null)
 
         when:
         fileStorage.save(log)
 
-        List<LogStatement> logs = []
+        List<LogEntry> logs = []
         fileStorage.load()
-            .subscribe(new Action1<LogStatement>() {
+            .subscribe(new Action1<LogEntry>() {
                 @Override
-                void call(LogStatement logStatement) {
+                void call(LogEntry logStatement) {
                     logs.add(logStatement)
                 }
             })
@@ -66,14 +66,14 @@ class FileStorageSpec extends RxSpecification {
 
         when:
         for (def index = 0; index < maxCount + 1; index++) {
-            fileStorage.save(new LogStatement("spec", 0, Integer.toString(index), null))
+            fileStorage.save(new LogEntry("spec", 0, Integer.toString(index), null))
         }
 
-        List<LogStatement> logs = []
+        List<LogEntry> logs = []
         fileStorage.load()
-                .subscribe(new Action1<LogStatement>() {
+                .subscribe(new Action1<LogEntry>() {
                     @Override
-                    void call(LogStatement logStatement) {
+                    void call(LogEntry logStatement) {
                         logs.add(logStatement)
                     }
                 })
@@ -88,16 +88,16 @@ class FileStorageSpec extends RxSpecification {
         def pathToFile = createFileForCurrentTest()
 
         def fileStorage = new FileStorage(new StorageConfig(10, 2, pathToFile))
-        def log = new LogStatement("fileStorageSpec", Log.DEBUG, "first log", null)
+        def log = new LogEntry("fileStorageSpec", Log.DEBUG, "first log", null)
 
         when:
         fileStorage.save(log)
 
-        List<LogStatement> logStatements = []
+        List<LogEntry> logStatements = []
         fileStorage.load()
-                .subscribe(new Action1<LogStatement>() {
+                .subscribe(new Action1<LogEntry>() {
                     @Override
-                    void call(LogStatement logStatement) {
+                    void call(LogEntry logStatement) {
                         logStatements.add(logStatement)
                     }
                 })

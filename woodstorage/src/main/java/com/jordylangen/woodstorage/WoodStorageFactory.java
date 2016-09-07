@@ -13,7 +13,7 @@ public final class WoodStorageFactory {
     }
 
     public static WoodStorageTree getInstance(Context context, StorageFactory storageFactory) {
-        PublishSubject<LogStatement> publishSubject = PublishSubject.create();
+        PublishSubject<LogEntry> publishSubject = PublishSubject.create();
         WoodStorageTree tree = new WoodStorageTree(publishSubject);
 
         if (WORKER != null) {

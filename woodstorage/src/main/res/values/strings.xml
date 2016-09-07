@@ -8,6 +8,6 @@
     <string name="log_level_error">error</string>
 
     <string name="woodstorage_action_filter">Filter</string>
-    <string name="woodstorage_action_sort">Sort</string>
+    <string name="woodstorage_action_sort">Sort Order</string>
     <string name="woodstorage_action_clear">Clear</string>
 </resources>

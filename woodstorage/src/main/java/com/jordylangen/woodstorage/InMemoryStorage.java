@@ -9,23 +9,23 @@ public class InMemoryStorage implements Storage {
 
     static final int MAX_ITEMS = 128;
 
-    private List<LogStatement> logStatements;
+    private List<LogEntry> logEntries;
 
     public InMemoryStorage() {
-        logStatements = new ArrayList<>();
+        logEntries = new ArrayList<>();
     }
 
     @Override
-    public void save(LogStatement logStatement) {
-        logStatements.add(logStatement);
+    public void save(LogEntry logEntry) {
+        logEntries.add(logEntry);
 
-        if (logStatements.size() > MAX_ITEMS) {
-            logStatements = logStatements.subList(logStatements.size() - MAX_ITEMS, logStatements.size());
+        if (logEntries.size() > MAX_ITEMS) {
+            logEntries = logEntries.subList(logEntries.size() - MAX_ITEMS, logEntries.size());
         }
     }
 
     @Override
-    public Observable<LogStatement> load() {
-        return Observable.from(logStatements);
+    public Observable<LogEntry> load() {
+        return Observable.from(logEntries);
     }
 }

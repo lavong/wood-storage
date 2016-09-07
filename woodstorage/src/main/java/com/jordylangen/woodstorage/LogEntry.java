@@ -5,9 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
-public class LogStatement {
+public class LogEntry {
 
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyMMddHHmmss", Locale.ENGLISH);
 
@@ -21,11 +20,11 @@ public class LogStatement {
     private String message;
     private String exception;
 
-    public LogStatement(String tag, int priority, String message, Throwable throwable) {
+    public LogEntry(String tag, int priority, String message, Throwable throwable) {
         this(tag, priority, message, new Date(), throwable != null ? throwable.getMessage() : null);
     }
 
-    private LogStatement(String tag, int priority, String message, Date timeStamp, String exception) {
+    private LogEntry(String tag, int priority, String message, Date timeStamp, String exception) {
         this.tag = tag;
         this.priority = priority;
         this.message = message;
@@ -57,7 +56,7 @@ public class LogStatement {
         return tag + SEPARATOR + priority + SEPARATOR + message + SEPARATOR + DATE_TIME_FORMAT.format(timeStamp) + SEPARATOR + exception;
     }
 
-    static LogStatement deserialize(String line) {
+    static LogEntry deserialize(String line) {
         String[] values = line.split(SEPARATOR);
 
         String tag = values[0];
@@ -75,7 +74,7 @@ public class LogStatement {
             exception = values[4];
         }
 
-        return new LogStatement(NULL.equals(tag) ? null : tag, priority, NULL.equals(message) ? null : message, timeStamp, NULL.equals(exception) ? null : exception);
+        return new LogEntry(NULL.equals(tag) ? null : tag, priority, NULL.equals(message) ? null : message, timeStamp, NULL.equals(exception) ? null : exception);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class LogStatement {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof LogStatement)) {
+        if (obj == null || !(obj instanceof LogEntry)) {
             return false;
         }
 
@@ -93,7 +92,7 @@ public class LogStatement {
             return true;
         }
 
-        LogStatement other = (LogStatement) obj;
+        LogEntry other = (LogEntry) obj;
 
         return equals(tag, other.tag) &&
                 equals(priority, other.priority) &&
