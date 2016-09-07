@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="WoodStorageActivity" parent="style/Theme.AppCompat.Light.NoActionBar" />
+    <style name="WoodStorageActivity" parent="style/Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/woodstorage_color_primary</item>
+        <item name="colorPrimaryDark">@color/woodstorage_color_primary_dark</item>
+        <item name="colorAccent">@color/woodstorage_color_accent</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+    </style>
 </resources>

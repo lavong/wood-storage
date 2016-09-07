@@ -1,9 +1,13 @@
 <resources>
-    <string name="app_name">Wood Storage</string>
+    <string name="woodstorage_title">Wood Storage</string>
 
     <string name="log_level_debug">debug</string>
     <string name="log_level_verbose">verbose</string>
     <string name="log_level_info">info</string>
     <string name="log_level_warn">warning</string>
     <string name="log_level_error">error</string>
+
+    <string name="woodstorage_action_filter">Filter</string>
+    <string name="woodstorage_action_sort">Sort</string>
+    <string name="woodstorage_action_clear">Clear</string>
 </resources>

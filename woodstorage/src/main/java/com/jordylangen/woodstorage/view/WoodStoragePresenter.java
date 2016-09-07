@@ -33,4 +33,9 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
     public void teardown() {
         subscription.unsubscribe();
     }
+
+    @Override
+    public void onOptionsItemSelected(int itemId) {
+        // todo
+    }
 }

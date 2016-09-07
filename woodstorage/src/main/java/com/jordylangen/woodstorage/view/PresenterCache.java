@@ -2,7 +2,7 @@ package com.jordylangen.woodstorage.view;
 
 import android.util.SparseArray;
 
-class PresenterCache {
+public class PresenterCache {
 
     private final static SparseArray<Contract.Presenter> PRESENTERS = new SparseArray<>();
 
@@ -10,7 +10,7 @@ class PresenterCache {
         PRESENTERS.put(id, presenter);
     }
 
-    static Contract.Presenter get(int id) {
+    public static Contract.Presenter get(int id) {
         if (PRESENTERS.indexOfKey(id) >= 0) {
             return PRESENTERS.get(id);
         }

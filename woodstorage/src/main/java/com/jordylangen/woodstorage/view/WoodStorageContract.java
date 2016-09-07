@@ -2,7 +2,7 @@ package com.jordylangen.woodstorage.view;
 
 import com.jordylangen.woodstorage.LogStatement;
 
-interface WoodStorageContract {
+public interface WoodStorageContract {
 
     interface View extends Contract.View {
 
@@ -11,5 +11,6 @@ interface WoodStorageContract {
 
     interface Presenter extends Contract.Presenter<View> {
 
+        void onOptionsItemSelected(int itemId);
     }
 }
