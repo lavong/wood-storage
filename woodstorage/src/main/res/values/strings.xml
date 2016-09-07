@@ -10,4 +10,6 @@
     <string name="woodstorage_action_filter">Filter</string>
     <string name="woodstorage_action_sort">Sort Order</string>
     <string name="woodstorage_action_clear">Clear</string>
+
+    <string name="dialog_tag_filter_title">Select the tags you want to see:</string>
 </resources>

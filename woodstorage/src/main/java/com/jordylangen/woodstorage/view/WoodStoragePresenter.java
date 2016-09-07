@@ -1,5 +1,9 @@
 package com.jordylangen.woodstorage.view;
 
+import android.content.Context;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+
 import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
 import com.jordylangen.woodstorage.WoodStorageFactory;
@@ -16,7 +20,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
     private Subscription subscription;
     private boolean isSortOrderAscending;
 
-    WoodStoragePresenter () {
+    WoodStoragePresenter() {
         isSortOrderAscending = true;
     }
 
@@ -38,6 +42,10 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
             unsubscribe();
             view.clear();
             subscribe();
+        }
+
+        if (itemId == R.id.woodstorage_action_filter) {
+            showTagFilterDialog();
         }
     }
 
@@ -68,5 +76,14 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     private void invertSortOrder() {
         isSortOrderAscending = !isSortOrderAscending;
+    }
+
+    private void showTagFilterDialog() {
+        Context context = view.getContext();
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(LayoutInflater.from(context).inflate(R.layout.view_tag_filter, null))
+                .create();
+
+        dialog.show();
     }
 }

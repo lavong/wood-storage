@@ -10,9 +10,9 @@ public class PresenterCache {
         PRESENTERS.put(id, presenter);
     }
 
-    public static Contract.Presenter get(int id) {
+    public static <P extends Contract.Presenter> P get(int id) {
         if (PRESENTERS.indexOfKey(id) >= 0) {
-            return PRESENTERS.get(id);
+            return (P) PRESENTERS.get(id);
         }
 
         return null;

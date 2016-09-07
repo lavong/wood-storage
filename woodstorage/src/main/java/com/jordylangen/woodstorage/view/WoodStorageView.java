@@ -9,9 +9,7 @@ import android.widget.LinearLayout;
 import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
 
-public class WoodStorageView extends LinearLayout implements WoodStorageContract.View {
-
-    private WoodStorageContract.Presenter presenter;
+public class WoodStorageView extends BaseView<WoodStorageContract.View, WoodStorageContract.Presenter> implements WoodStorageContract.View {
 
     private LogEntryAdapter adapter;
 
@@ -28,28 +26,17 @@ public class WoodStorageView extends LinearLayout implements WoodStorageContract
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
+    protected void setup() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.woodstorage_overview_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new LogEntryAdapter();
         recyclerView.setAdapter(adapter);
-
-        presenter = (WoodStorageContract.Presenter) PresenterCache.get(getId());
-        if (presenter == null) {
-            presenter = new WoodStoragePresenter();
-            PresenterCache.put(getId(), presenter);
-        }
-
-        presenter.setup(this);
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        presenter.teardown();
-        super.onDetachedFromWindow();
+    protected WoodStorageContract.Presenter newPresenter() {
+        return new WoodStoragePresenter();
     }
 
     @Override
