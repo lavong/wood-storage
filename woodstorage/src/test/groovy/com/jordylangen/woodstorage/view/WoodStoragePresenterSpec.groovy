@@ -1,12 +1,7 @@
 package com.jordylangen.woodstorage.view
 
 import android.content.Context
-import com.jordylangen.woodstorage.LogEntry
-import com.jordylangen.woodstorage.R
-import com.jordylangen.woodstorage.RxSpecification
-import com.jordylangen.woodstorage.Storage
-import com.jordylangen.woodstorage.StorageFactory
-import com.jordylangen.woodstorage.WoodStorageFactory
+import com.jordylangen.woodstorage.*
 import rx.Observable
 
 class WoodStoragePresenterSpec extends RxSpecification {
@@ -83,16 +78,17 @@ class WoodStoragePresenterSpec extends RxSpecification {
     }
 
     def "should clear logs"() {
-        given:
-        storage.load() >> Observable.empty()
-
         when:
         presenter.setup(view)
 
-        and:
+        then:
+        1 * storage.load() >> Observable.empty()
+
+        when:
         presenter.onOptionsItemSelected(R.id.woodstorage_action_clear)
 
         then:
+        1 * storage.load() >> Observable.empty()
         1 * storage.clear()
         1 * view.clear()
     }

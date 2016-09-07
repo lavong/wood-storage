@@ -148,7 +148,10 @@ public class FileStorage implements Storage {
     @Override
     public void clear() {
         try {
-            replaySubject = null;
+            if (replaySubject != null) {
+                replaySubject.onCompleted();
+                replaySubject = null;
+            }
             if (file.delete()) {
                 file.createNewFile();
             }

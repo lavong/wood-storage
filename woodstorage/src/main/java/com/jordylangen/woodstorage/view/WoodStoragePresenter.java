@@ -36,7 +36,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
         unsubscribe();
         if (itemId == R.id.woodstorage_action_sort) {
             invertSortOrder();
-        } else if (itemId == R.id.woodstorage_action_clear) {
+        } else if (itemId == R.id.woodstorage_action_clear && WoodStorageFactory.getWorker() != null) {
             WoodStorageFactory.getWorker().getStorage().clear();
         }
         view.clear();

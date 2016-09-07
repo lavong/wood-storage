@@ -4,6 +4,7 @@ import android.util.Log
 import org.junit.Rule
 import org.junit.rules.TestName
 import rx.functions.Action1
+import rx.observers.TestSubscriber
 
 class FileStorageSpec extends RxSpecification {
 
@@ -122,6 +123,7 @@ class FileStorageSpec extends RxSpecification {
 
         when:
         fileStorage.save(new LogEntry("tag", 0, "u no see this", null))
+        fileStorage.load().subscribe(new TestSubscriber<LogEntry>())
 
         and:
         fileStorage.clear()
