@@ -14,8 +14,11 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     private WoodStorageContract.View view;
     private Subscription subscription;
-    private boolean isSortOrderAscending = true;
+    private boolean isSortOrderAscending;
 
+    WoodStoragePresenter () {
+        isSortOrderAscending = true;
+    }
 
     @Override
     public void setup(final WoodStorageContract.View view) {
