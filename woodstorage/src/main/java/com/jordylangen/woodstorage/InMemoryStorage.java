@@ -28,4 +28,9 @@ public class InMemoryStorage implements Storage {
     public Observable<LogEntry> load() {
         return Observable.from(logEntries);
     }
+
+    @Override
+    public void clear() {
+        logEntries.clear();
+    }
 }

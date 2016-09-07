@@ -16,7 +16,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
     private Subscription subscription;
     private boolean isSortOrderAscending;
 
-    WoodStoragePresenter () {
+    WoodStoragePresenter() {
         isSortOrderAscending = true;
     }
 
@@ -33,12 +33,14 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     @Override
     public void onOptionsItemSelected(int itemId) {
+        unsubscribe();
         if (itemId == R.id.woodstorage_action_sort) {
             invertSortOrder();
-            unsubscribe();
-            view.clear();
-            subscribe();
+        } else if (itemId == R.id.woodstorage_action_clear) {
+            WoodStorageFactory.getWorker().getStorage().clear();
         }
+        view.clear();
+        subscribe();
     }
 
     private void unsubscribe() {

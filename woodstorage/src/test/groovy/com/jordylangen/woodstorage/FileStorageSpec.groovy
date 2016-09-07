@@ -1,4 +1,5 @@
 package com.jordylangen.woodstorage
+
 import android.util.Log
 import org.junit.Rule
 import org.junit.rules.TestName
@@ -7,7 +8,8 @@ import rx.functions.Action1
 class FileStorageSpec extends RxSpecification {
 
     private static final String PATH_TO_DIRECTORY = "build/tmp/"
-    @Rule TestName name = new TestName()
+    @Rule
+    TestName name = new TestName()
 
     def createFileForCurrentTest() {
         def fileName = name.methodName + ".txt"
@@ -43,12 +45,12 @@ class FileStorageSpec extends RxSpecification {
 
         List<LogEntry> logs = []
         fileStorage.load()
-            .subscribe(new Action1<LogEntry>() {
-                @Override
-                void call(LogEntry logStatement) {
-                    logs.add(logStatement)
-                }
-            })
+                .subscribe(new Action1<LogEntry>() {
+            @Override
+            void call(LogEntry logStatement) {
+                logs.add(logStatement)
+            }
+        })
 
         then:
         !logs.isEmpty()
@@ -72,11 +74,11 @@ class FileStorageSpec extends RxSpecification {
         List<LogEntry> logs = []
         fileStorage.load()
                 .subscribe(new Action1<LogEntry>() {
-                    @Override
-                    void call(LogEntry logStatement) {
-                        logs.add(logStatement)
-                    }
-                })
+            @Override
+            void call(LogEntry logStatement) {
+                logs.add(logStatement)
+            }
+        })
 
         then:
         !logs.isEmpty()
@@ -96,11 +98,11 @@ class FileStorageSpec extends RxSpecification {
         List<LogEntry> logStatements = []
         fileStorage.load()
                 .subscribe(new Action1<LogEntry>() {
-                    @Override
-                    void call(LogEntry logStatement) {
-                        logStatements.add(logStatement)
-                    }
-                })
+            @Override
+            void call(LogEntry logStatement) {
+                logStatements.add(logStatement)
+            }
+        })
 
         then:
         !logStatements.isEmpty()
@@ -112,5 +114,28 @@ class FileStorageSpec extends RxSpecification {
 
         then:
         logStatements.size() == 2
+    }
+
+    def "should clear log file entries"() {
+        given:
+        def fileStorage = new FileStorage(new StorageConfig(42, 23, createFileForCurrentTest()))
+
+        when:
+        fileStorage.save(new LogEntry("tag", 0, "u no see this", null))
+
+        and:
+        fileStorage.clear()
+
+        List<LogEntry> logs = []
+        fileStorage.load()
+                .subscribe(new Action1<LogEntry>() {
+            @Override
+            void call(LogEntry logStatement) {
+                logs.add(logStatement)
+            }
+        })
+
+        then:
+        logs.isEmpty()
     }
 }

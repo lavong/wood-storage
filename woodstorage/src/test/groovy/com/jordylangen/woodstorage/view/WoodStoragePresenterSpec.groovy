@@ -2,11 +2,11 @@ package com.jordylangen.woodstorage.view
 
 import android.content.Context
 import com.jordylangen.woodstorage.LogEntry
+import com.jordylangen.woodstorage.R
 import com.jordylangen.woodstorage.RxSpecification
 import com.jordylangen.woodstorage.Storage
 import com.jordylangen.woodstorage.StorageFactory
 import com.jordylangen.woodstorage.WoodStorageFactory
-import com.jordylangen.woodstorage.R;
 import rx.Observable
 
 class WoodStoragePresenterSpec extends RxSpecification {
@@ -28,7 +28,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
         })
     }
 
-    def "should subscribe on setup" () {
+    def "should subscribe on setup"() {
         when:
         presenter.setup(view)
 
@@ -37,7 +37,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
         0 * view._
     }
 
-    def "should add all logs to the view in normal order" () {
+    def "should add all logs to the view in normal order"() {
         given:
         def count = 10;
         def logs = []
@@ -56,7 +56,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
         count * view.add(_ as LogEntry)
     }
 
-    def "should clear all logs upon sort order inversion and add them again inverted" () {
+    def "should clear all logs upon sort order inversion and add them again inverted"() {
         given:
         def count = 10;
         def logs = []
@@ -80,5 +80,20 @@ class WoodStoragePresenterSpec extends RxSpecification {
         then:
         1 * view.clear()
         count * view.addAt(_ as LogEntry, 0)
+    }
+
+    def "should clear logs"() {
+        given:
+        storage.load() >> Observable.empty()
+
+        when:
+        presenter.setup(view)
+
+        and:
+        presenter.onOptionsItemSelected(R.id.woodstorage_action_clear)
+
+        then:
+        1 * storage.clear()
+        1 * view.clear()
     }
 }
