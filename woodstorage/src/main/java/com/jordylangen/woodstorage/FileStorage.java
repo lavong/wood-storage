@@ -145,6 +145,21 @@ public class FileStorage implements Storage {
         return replaySubject.asObservable();
     }
 
+    @Override
+    public void clear() {
+        try {
+            if (replaySubject != null) {
+                replaySubject.onCompleted();
+                replaySubject = null;
+            }
+            if (file.delete()) {
+                file.createNewFile();
+            }
+        } catch (IOException exception) {
+            Log.e(TAG, "could not write to file at " + file.getAbsolutePath(), exception);
+        }
+    }
+
     private List<LogEntry> loadLogsFromFile() {
         List<LogEntry> logs = new ArrayList<>();
 

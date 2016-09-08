@@ -7,4 +7,6 @@ public interface Storage {
     void save(LogEntry logEntry);
 
     Observable<LogEntry> load();
+
+    void clear();
 }
