@@ -37,16 +37,20 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     @Override
     public void onOptionsItemSelected(int itemId) {
-        if (itemId == R.id.woodstorage_action_sort) {
-            invertSortOrder();
-            unsubscribe();
-            view.clear();
-            subscribe();
-        }
-
         if (itemId == R.id.woodstorage_action_filter) {
             showTagFilterDialog();
+            return;
         }
+
+        unsubscribe();
+        if (itemId == R.id.woodstorage_action_sort) {
+            invertSortOrder();
+        } else if (itemId == R.id.woodstorage_action_clear && WoodStorageFactory.getWorker() != null) {
+            WoodStorageFactory.getWorker().getStorage().clear();
+        }
+
+        view.clear();
+        subscribe();
     }
 
     private void unsubscribe() {
