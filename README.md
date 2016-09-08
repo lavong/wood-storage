@@ -10,4 +10,5 @@ Persistent storage for Timber including an overview activity
 * save to sd card
 * share
 * setup CI
-* deply v1.0!
+* deploy v1.0!
+* create a proper README explaining the usage of the library
