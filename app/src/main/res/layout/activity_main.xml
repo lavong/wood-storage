@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.jordylangen.woodstorage.example.MainActivity">
+    tools:context="com.jordylangen.woodstorage.example.MainActivity"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/button_open_overview"

@@ -8,12 +8,12 @@ import java.util.Locale;
 
 public class LogEntry {
 
-    private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyMMddHHmmss", Locale.ENGLISH);
+    static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyMMddHHmmss", Locale.ENGLISH);
 
-    private static final String SEPARATOR = "``";
-    private static final String NEWLINE_REPLACEMENT = "~~";
-    private static final String NULL = "null";
-
+    static final String SEPARATOR = "``";
+    static final String NEWLINE = "\n";
+    static final String NEWLINE_REPLACEMENT = "~~";
+    static final String NULL = "null";
 
     private Date timeStamp;
     private String tag;
@@ -72,7 +72,7 @@ public class LogEntry {
             return value;
         }
 
-        return value.replace("\\n", NEWLINE_REPLACEMENT);
+        return value.replace(NEWLINE, NEWLINE_REPLACEMENT);
     }
 
     private static String reAddNewLines(String value) {
@@ -80,7 +80,7 @@ public class LogEntry {
             return value;
         }
 
-        return value.replace(NEWLINE_REPLACEMENT, "\\n");
+        return value.replace(NEWLINE_REPLACEMENT, NEWLINE);
     }
 
     @Override
