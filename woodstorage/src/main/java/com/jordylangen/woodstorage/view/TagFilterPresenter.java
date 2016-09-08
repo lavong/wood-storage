@@ -12,25 +12,35 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 public class TagFilterPresenter implements TagFilterContract.Presenter {
 
     private TagFilterContract.View view;
     private Subscription subscription;
-    private List<TagFilterViewModel> selectedTags;
+    private List<SelectableTag> selectableTags;
+    private PublishSubject<List<SelectableTag>> selectedTagsPublishSubject;
 
     TagFilterPresenter() {
-        selectedTags = new ArrayList<>();
+        selectableTags = new ArrayList<>();
     }
 
     @Override
     public void setup(TagFilterContract.View view) {
         this.view = view;
+
+        selectedTagsPublishSubject = PublishSubject.create();
+
+        if (selectableTags != null && !selectableTags.isEmpty()) {
+            view.addAll(selectableTags);
+        }
+
         subscribe();
     }
 
     @Override
     public void teardown() {
+        selectedTagsPublishSubject.onCompleted();
         unsubscribe();
     }
 
@@ -54,7 +64,7 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
                             return false;
                         }
 
-                        for (TagFilterViewModel selectableTag : selectedTags) {
+                        for (SelectableTag selectableTag : selectableTags) {
                             if (selectableTag.getTag().equals(logEntry.getTag())) {
                                 return false;
                             }
@@ -66,10 +76,26 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
                 .subscribe(new Action1<LogEntry>() {
                     @Override
                     public void call(LogEntry logEntry) {
-                        TagFilterViewModel selectableTag = new TagFilterViewModel(logEntry.getTag(), true);
-                        selectedTags.add(selectableTag);
+                        SelectableTag selectableTag = new SelectableTag(logEntry.getTag(), true);
+                        selectableTags.add(selectableTag);
                         view.add(selectableTag);
                     }
                 });
+    }
+
+    @Override
+    public void tagSelectedChanged(SelectableTag viewModel, boolean isChecked) {
+        for (SelectableTag selectableTag : selectableTags) {
+            if (selectableTag.getTag().equals(viewModel.getTag())) {
+                selectableTag.setIsSelected(isChecked);
+            }
+        }
+
+        selectedTagsPublishSubject.onNext(selectableTags);
+    }
+
+    @Override
+    public Observable<List<SelectableTag>> observeSelectedTags() {
+        return selectedTagsPublishSubject.asObservable();
     }
 }

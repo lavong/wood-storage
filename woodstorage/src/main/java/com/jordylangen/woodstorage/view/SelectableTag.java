@@ -1,11 +1,11 @@
 package com.jordylangen.woodstorage.view;
 
-public class TagFilterViewModel {
+public class SelectableTag {
 
     private String tag;
     private boolean isSelected;
 
-    public TagFilterViewModel(String tag, boolean isSelected) {
+    public SelectableTag(String tag, boolean isSelected) {
         this.tag = tag;
         this.isSelected = isSelected;
     }
@@ -16,5 +16,9 @@ public class TagFilterViewModel {
 
     public boolean isSelected() {
         return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

@@ -1,9 +1,17 @@
 package com.jordylangen.woodstorage.view;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterContract.Presenter> implements TagFilterContract.View {
+import com.jordylangen.woodstorage.R;
+
+import java.util.List;
+
+public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterContract.Presenter> implements TagFilterContract.View, TagFilterAdapter.Callback {
+
+    private TagFilterAdapter adapter;
 
     public TagFilterView(Context context) {
         this(context, null);
@@ -19,7 +27,11 @@ public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterCon
 
     @Override
     protected void setup() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_tag_filter_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        adapter = new TagFilterAdapter(this);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -28,7 +40,17 @@ public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterCon
     }
 
     @Override
-    public void add(TagFilterViewModel selectableTag) {
+    public void add(SelectableTag selectableTag) {
+        adapter.add(selectableTag);
+    }
 
+    @Override
+    public void addAll(List<SelectableTag> selectedTags) {
+        adapter.set(selectedTags);
+    }
+
+    @Override
+    public void tagSelectedChanged(SelectableTag selectableTag, boolean isChecked) {
+        getPresenter().tagSelectedChanged(selectableTag, isChecked);
     }
 }
