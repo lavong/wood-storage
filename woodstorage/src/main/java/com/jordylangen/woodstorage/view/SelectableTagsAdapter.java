@@ -13,24 +13,24 @@ import com.jordylangen.woodstorage.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TagFilterAdapter extends RecyclerView.Adapter<TagFilterAdapter.TagFilterViewHolder> {
+public class SelectableTagsAdapter extends RecyclerView.Adapter<SelectableTagsAdapter.SelectableTagViewHolder> {
 
     private Callback callback;
     private List<SelectableTag> selectableTags;
 
-    public TagFilterAdapter(Callback callback) {
+    public SelectableTagsAdapter(Callback callback) {
         this.callback = callback;
         selectableTags = new ArrayList<>();
     }
 
     @Override
-    public TagFilterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SelectableTagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_selectable_tag, parent, false);
-        return new TagFilterViewHolder(view);
+        return new SelectableTagViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TagFilterViewHolder holder, int position) {
+    public void onBindViewHolder(SelectableTagViewHolder holder, int position) {
         final SelectableTag selectableTag = selectableTags.get(position);
         holder.tagTextView.setText(selectableTag.getTag());
         holder.isSelectedCheckbox.setChecked(selectableTag.isSelected());
@@ -59,12 +59,12 @@ public class TagFilterAdapter extends RecyclerView.Adapter<TagFilterAdapter.TagF
         notifyDataSetChanged();
     }
 
-    public class TagFilterViewHolder extends RecyclerView.ViewHolder {
+    public class SelectableTagViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tagTextView;
         private CheckBox isSelectedCheckbox;
 
-        public TagFilterViewHolder(View itemView) {
+        public SelectableTagViewHolder(View itemView) {
             super(itemView);
             tagTextView = (TextView) itemView.findViewById(R.id.selectable_tag);
             isSelectedCheckbox = (CheckBox) itemView.findViewById(R.id.selectable_tag_is_selected);

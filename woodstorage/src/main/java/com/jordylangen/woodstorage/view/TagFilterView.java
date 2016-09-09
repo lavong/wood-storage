@@ -9,9 +9,9 @@ import com.jordylangen.woodstorage.R;
 
 import java.util.List;
 
-public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterContract.Presenter> implements TagFilterContract.View, TagFilterAdapter.Callback {
+public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterContract.Presenter> implements TagFilterContract.View, SelectableTagsAdapter.Callback {
 
-    private TagFilterAdapter adapter;
+    private SelectableTagsAdapter adapter;
 
     public TagFilterView(Context context) {
         this(context, null);
@@ -30,7 +30,7 @@ public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterCon
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.dialog_tag_filter_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new TagFilterAdapter(this);
+        adapter = new SelectableTagsAdapter(this);
         recyclerView.setAdapter(adapter);
     }
 
