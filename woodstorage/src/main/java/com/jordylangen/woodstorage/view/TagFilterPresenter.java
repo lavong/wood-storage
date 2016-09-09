@@ -17,7 +17,7 @@ import rx.subjects.PublishSubject;
 public class TagFilterPresenter implements TagFilterContract.Presenter {
 
     private TagFilterContract.View view;
-    private Subscription subscription;
+    private Subscription logEntriesSubscription;
     private List<SelectableTag> selectableTags;
     private PublishSubject<List<SelectableTag>> selectedTagsPublishSubject;
 
@@ -32,7 +32,7 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
         selectedTagsPublishSubject = PublishSubject.create();
 
         if (selectableTags != null && !selectableTags.isEmpty()) {
-            view.addAll(selectableTags);
+            view.set(selectableTags);
         }
 
         subscribe();
@@ -45,8 +45,8 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
     }
 
     private void unsubscribe() {
-        if (subscription != null) {
-            subscription.unsubscribe();
+        if (logEntriesSubscription != null && !logEntriesSubscription.isUnsubscribed()) {
+            logEntriesSubscription.unsubscribe();
         }
     }
 
@@ -55,7 +55,7 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
                 ? WoodStorageFactory.getWorker().getStorage().load()
                 : Observable.<LogEntry>empty();
 
-        subscription = observable.subscribeOn(Schedulers.io())
+        logEntriesSubscription = observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new Func1<LogEntry, Boolean>() {
                     @Override
@@ -84,10 +84,10 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
     }
 
     @Override
-    public void tagSelectedChanged(SelectableTag viewModel, boolean isChecked) {
+    public void tagSelectedChanged(SelectableTag viewModel, boolean isSelected) {
         for (SelectableTag selectableTag : selectableTags) {
             if (selectableTag.getTag().equals(viewModel.getTag())) {
-                selectableTag.setIsSelected(isChecked);
+                selectableTag.setIsSelected(isSelected);
             }
         }
 

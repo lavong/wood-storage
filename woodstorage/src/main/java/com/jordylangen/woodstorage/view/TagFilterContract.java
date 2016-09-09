@@ -10,7 +10,7 @@ public interface TagFilterContract extends Contract {
 
         void add(SelectableTag selectableTag);
 
-        void addAll(List<SelectableTag> selectedTags);
+        void set(List<SelectableTag> selectedTags);
     }
 
     interface Presenter extends Contract.Presenter<View> {

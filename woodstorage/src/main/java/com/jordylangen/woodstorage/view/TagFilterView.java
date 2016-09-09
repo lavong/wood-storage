@@ -45,7 +45,7 @@ public class TagFilterView extends BaseView<TagFilterContract.View, TagFilterCon
     }
 
     @Override
-    public void addAll(List<SelectableTag> selectedTags) {
+    public void set(List<SelectableTag> selectedTags) {
         adapter.set(selectedTags);
     }
 
