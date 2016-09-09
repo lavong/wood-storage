@@ -39,11 +39,8 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     @Override
     public void teardown() {
-        unsubscribe();
-
-        if (selectedTagsSubscription != null) {
-            selectedTagsSubscription.unsubscribe();
-        }
+        unsubscribe(logEntriesSubscription);
+        unsubscribe(selectedTagsSubscription);
     }
 
     @Override
@@ -53,7 +50,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
             return;
         }
 
-        unsubscribe();
+        unsubscribe(logEntriesSubscription);
         if (itemId == R.id.woodstorage_action_sort) {
             invertSortOrder();
         } else if (itemId == R.id.woodstorage_action_clear && WoodStorageFactory.getWorker() != null) {
@@ -64,9 +61,9 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
         subscribe();
     }
 
-    private void unsubscribe() {
-        if (logEntriesSubscription != null) {
-            logEntriesSubscription.unsubscribe();
+    private void unsubscribe(Subscription subscription) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
         }
     }
 
@@ -78,7 +75,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
         Observable<LogEntry> logEntryObservable = observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        if (selectedTags != null && !selectedTags.isEmpty()) {
+        if (!selectedTags.isEmpty()) {
             logEntryObservable = logEntryObservable.filter(new Func1<LogEntry, Boolean>() {
                 @Override
                 public Boolean call(LogEntry logEntry) {
@@ -104,12 +101,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
     }
 
     private void showTagFilterDialog() {
-        Context context = view.getContext();
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setView(LayoutInflater.from(context).inflate(R.layout.view_tag_filter, null))
-                .create();
-
-        dialog.show();
+        view.showTagFilterDialog();
 
         TagFilterContract.Presenter tagFilterPresenter = PresenterCache.get(R.id.dialog_tag_filter);
         if (tagFilterPresenter == null) {
@@ -122,30 +114,34 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
                 .flatMap(new Func1<List<SelectableTag>, Observable<List<String>>>() {
                     @Override
                     public Observable<List<String>> call(List<SelectableTag> selectableTags) {
-                        return Observable.from(selectableTags)
-                                .filter(new Func1<SelectableTag, Boolean>() {
-                                    @Override
-                                    public Boolean call(SelectableTag selectableTag) {
-                                        return selectableTag.isSelected();
-                                    }
-                                })
-                                .map(new Func1<SelectableTag, String>() {
-                                    @Override
-                                    public String call(SelectableTag selectableTag) {
-                                        return selectableTag.getTag();
-                                    }
-                                })
-                                .toList();
+                        return selectAndMapSelectedTags(selectableTags);
                     }
                 })
                 .subscribe(new Action1<List<String>>() {
                     @Override
                     public void call(List<String> tags) {
-                        unsubscribe();
+                        unsubscribe(logEntriesSubscription);
                         selectedTags = tags;
                         view.clear();
                         subscribe();
                     }
                 });
+    }
+
+    private Observable<List<String>> selectAndMapSelectedTags(List<SelectableTag> selectableTags) {
+        return Observable.from(selectableTags)
+                .filter(new Func1<SelectableTag, Boolean>() {
+                    @Override
+                    public Boolean call(SelectableTag selectableTag) {
+                        return selectableTag.isSelected();
+                    }
+                })
+                .map(new Func1<SelectableTag, String>() {
+                    @Override
+                    public String call(SelectableTag selectableTag) {
+                        return selectableTag.getTag();
+                    }
+                })
+                .toList();
     }
 }

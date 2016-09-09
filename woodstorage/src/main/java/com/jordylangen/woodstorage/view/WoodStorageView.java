@@ -1,9 +1,11 @@
 package com.jordylangen.woodstorage.view;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 import com.jordylangen.woodstorage.LogEntry;
@@ -52,5 +54,14 @@ public class WoodStorageView extends BaseView<WoodStorageContract.View, WoodStor
     @Override
     public void clear() {
         adapter.clear();
+    }
+
+    @Override
+    public void showTagFilterDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setView(LayoutInflater.from(getContext()).inflate(R.layout.view_tag_filter, null))
+                .create();
+
+        dialog.show();
     }
 }
