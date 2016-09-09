@@ -11,6 +11,8 @@ public interface WoodStorageContract {
         void addAt(LogEntry logEntry, int index);
 
         void clear();
+
+        void showTagFilterDialog();
     }
 
     interface Presenter extends Contract.Presenter<View> {

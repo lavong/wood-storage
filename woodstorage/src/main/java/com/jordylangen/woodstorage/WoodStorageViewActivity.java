@@ -20,7 +20,7 @@ public class WoodStorageViewActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.woodstorage_overview_toolbar);
         setSupportActionBar(toolbar);
 
-        woodStoragePresenter = (WoodStorageContract.Presenter) PresenterCache.get(R.id.view_wood_storage);
+        woodStoragePresenter = PresenterCache.get(R.id.view_wood_storage);
     }
 
     @Override
