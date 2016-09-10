@@ -4,7 +4,7 @@
 
 ## Open tasks
 * ~~library icon~~
-* filter on tags
+* ~~filter on tags~~
 * ~~clear~~
 * search
 * save to sd card
