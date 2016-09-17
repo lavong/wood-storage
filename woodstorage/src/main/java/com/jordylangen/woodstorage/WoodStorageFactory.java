@@ -2,7 +2,7 @@ package com.jordylangen.woodstorage;
 
 import android.content.Context;
 
-import rx.subjects.PublishSubject;
+import io.reactivex.subjects.PublishSubject;
 
 public final class WoodStorageFactory {
 
@@ -20,7 +20,7 @@ public final class WoodStorageFactory {
             stop();
         }
 
-        WORKER = new WoodStorageWorker(storageFactory.create(context), publishSubject.asObservable());
+        WORKER = new WoodStorageWorker(storageFactory.create(context), publishSubject);
         WORKER.start();
 
         return tree;

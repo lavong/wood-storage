@@ -1,9 +1,5 @@
 package com.jordylangen.woodstorage.view;
 
-import android.content.Context;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
-
 import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
 import com.jordylangen.woodstorage.WoodStorageFactory;
@@ -11,18 +7,21 @@ import com.jordylangen.woodstorage.WoodStorageFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     private WoodStorageContract.View view;
-    private Subscription logEntriesSubscription;
-    private Subscription selectedTagsSubscription;
+    private Disposable logEntriesSubscription;
+    private Disposable selectedTagsSubscription;
     private boolean isSortOrderAscending;
     private List<String> selectedTags;
 
@@ -39,8 +38,8 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
 
     @Override
     public void teardown() {
-        unsubscribe(logEntriesSubscription);
-        unsubscribe(selectedTagsSubscription);
+        dispose(logEntriesSubscription);
+        dispose(selectedTagsSubscription);
     }
 
     @Override
@@ -50,7 +49,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
             return;
         }
 
-        unsubscribe(logEntriesSubscription);
+        dispose(logEntriesSubscription);
         if (itemId == R.id.woodstorage_action_sort) {
             invertSortOrder();
         } else if (itemId == R.id.woodstorage_action_clear && WoodStorageFactory.getWorker() != null) {
@@ -61,32 +60,33 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
         subscribe();
     }
 
-    private void unsubscribe(Subscription subscription) {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
+    private void dispose(Disposable subscription) {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
         }
     }
 
     private void subscribe() {
-        Observable<LogEntry> observable = WoodStorageFactory.getWorker() != null
+        Flowable<LogEntry> observable = WoodStorageFactory.getWorker() != null
                 ? WoodStorageFactory.getWorker().getStorage().load()
-                : Observable.<LogEntry>empty();
+                : Flowable.<LogEntry>empty();
 
-        Observable<LogEntry> logEntryObservable = observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        Flowable<LogEntry> logEntryObservable = observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                ;
 
         if (!selectedTags.isEmpty()) {
-            logEntryObservable = logEntryObservable.filter(new Func1<LogEntry, Boolean>() {
+            logEntryObservable = logEntryObservable.filter(new Predicate<LogEntry>() {
                 @Override
-                public Boolean call(LogEntry logEntry) {
+                public boolean test(LogEntry logEntry) throws Exception {
                     return selectedTags.contains(logEntry.getTag());
                 }
             });
         }
 
-        logEntriesSubscription = logEntryObservable.subscribe(new Action1<LogEntry>() {
+        logEntriesSubscription = logEntryObservable.subscribe(new Consumer<LogEntry>() {
             @Override
-            public void call(LogEntry logEntry) {
+            public void accept(LogEntry logEntry) throws Exception {
                 if (isSortOrderAscending) {
                     view.add(logEntry);
                 } else {
@@ -111,16 +111,16 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
         selectedTagsSubscription = tagFilterPresenter.observeSelectedTags()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<SelectableTag>, Observable<List<String>>>() {
+                .flatMap(new Function<List<SelectableTag>, ObservableSource<List<String>>>() {
                     @Override
-                    public Observable<List<String>> call(List<SelectableTag> selectableTags) {
+                    public ObservableSource<List<String>> apply(List<SelectableTag> selectableTags) throws Exception {
                         return selectAndMapSelectedTags(selectableTags);
                     }
                 })
-                .subscribe(new Action1<List<String>>() {
+                .subscribe(new Consumer<List<String>>() {
                     @Override
-                    public void call(List<String> tags) {
-                        unsubscribe(logEntriesSubscription);
+                    public void accept(List<String> tags) throws Exception {
+                        dispose(logEntriesSubscription);
                         selectedTags = tags;
                         view.clear();
                         subscribe();
@@ -129,16 +129,16 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
     }
 
     private Observable<List<String>> selectAndMapSelectedTags(List<SelectableTag> selectableTags) {
-        return Observable.from(selectableTags)
-                .filter(new Func1<SelectableTag, Boolean>() {
+        return Observable.fromIterable(selectableTags)
+                .filter(new Predicate<SelectableTag>() {
                     @Override
-                    public Boolean call(SelectableTag selectableTag) {
+                    public boolean test(SelectableTag selectableTag) throws Exception {
                         return selectableTag.isSelected();
                     }
                 })
-                .map(new Func1<SelectableTag, String>() {
+                .map(new Function<SelectableTag, String>() {
                     @Override
-                    public String call(SelectableTag selectableTag) {
+                    public String apply(SelectableTag selectableTag) throws Exception {
                         return selectableTag.getTag();
                     }
                 })

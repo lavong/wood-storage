@@ -1,6 +1,6 @@
 package com.jordylangen.woodstorage;
 
-import rx.subjects.PublishSubject;
+import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class WoodStorageTree extends Timber.DebugTree {
