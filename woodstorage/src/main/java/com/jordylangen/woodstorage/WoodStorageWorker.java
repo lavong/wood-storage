@@ -17,6 +17,7 @@ public class WoodStorageWorker {
 
     public void start() {
         subscription = logObserver.subscribeOn(Schedulers.io())
+                .onBackpressureBuffer()
                 .observeOn(Schedulers.io())
                 .subscribe(new io.reactivex.functions.Consumer<LogEntry>() {
                     @Override
