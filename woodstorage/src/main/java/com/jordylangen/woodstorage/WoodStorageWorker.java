@@ -1,5 +1,6 @@
 package com.jordylangen.woodstorage;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -7,10 +8,10 @@ import io.reactivex.schedulers.Schedulers;
 public class WoodStorageWorker {
 
     private Storage storage;
-    private Observable<LogEntry> logObserver;
+    private Flowable<LogEntry> logObserver;
     private Disposable subscription;
 
-    public WoodStorageWorker(Storage storage, Observable<LogEntry> logObserver) {
+    public WoodStorageWorker(Storage storage, Flowable<LogEntry> logObserver) {
         this.storage = storage;
         this.logObserver = logObserver;
     }
