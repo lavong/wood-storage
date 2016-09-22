@@ -2,8 +2,9 @@ package com.jordylangen.woodstorage.view
 
 import android.content.Context
 import com.jordylangen.woodstorage.*
-import rx.Observable
-import rx.Subscription
+import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 
 class WoodStoragePresenterSpec extends RxSpecification {
 
@@ -29,7 +30,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
         presenter.setup(view)
 
         then:
-        1 * storage.load() >> Observable.empty()
+        1 * storage.load() >> Flowable.empty()
         0 * view._
     }
 
@@ -42,7 +43,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
             logs.add(new LogEntry("spec", 0, Integer.toString(index)))
         }
 
-        def observable = Observable.from(logs)
+        def observable = Flowable.fromIterable(logs)
         storage.load() >> observable
 
         when:
@@ -61,7 +62,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
             logs.add(new LogEntry("spec", 0, Integer.toString(index)))
         }
 
-        def observable = Observable.from(logs)
+        def observable = Flowable.fromIterable(logs)
         storage.load() >> observable
 
         when:
@@ -83,21 +84,21 @@ class WoodStoragePresenterSpec extends RxSpecification {
         presenter.setup(view)
 
         then:
-        1 * storage.load() >> Observable.empty()
+        1 * storage.load() >> Flowable.empty()
 
         when:
         presenter.onOptionsItemSelected(R.id.woodstorage_action_clear)
 
         then:
-        1 * storage.load() >> Observable.empty()
+        1 * storage.load() >> Flowable.empty()
         1 * storage.clear()
         1 * view.clear()
     }
 
     def "should unsubscribe all subscriptions upon teardown"() {
         given:
-        def logEntriesSubscription = Mock(Subscription)
-        def selectedTagsSubscription = Mock(Subscription)
+        def logEntriesSubscription = Mock(Disposable)
+        def selectedTagsSubscription = Mock(Disposable)
         presenter.logEntriesSubscription = logEntriesSubscription
         presenter.selectedTagsSubscription = selectedTagsSubscription
 
@@ -105,10 +106,10 @@ class WoodStoragePresenterSpec extends RxSpecification {
         presenter.teardown()
 
         then:
-        1 * logEntriesSubscription.isUnsubscribed()
-        1 * logEntriesSubscription.unsubscribe()
-        1 * selectedTagsSubscription.isUnsubscribed()
-        1 * selectedTagsSubscription.unsubscribe()
+        1 * logEntriesSubscription.isDisposed()
+        1 * logEntriesSubscription.dispose()
+        1 * selectedTagsSubscription.isDisposed()
+        1 * selectedTagsSubscription.dispose()
     }
 
     def "should show the tag filter dialog and filter the logs when filters are applied"() {
@@ -120,7 +121,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
         ]
 
         def tagFilterPresenter = Mock(TagFilterContract.Presenter)
-        tagFilterPresenter.observeSelectedTags() >> Observable.from(selectableTags).toList()
+        tagFilterPresenter.observeSelectedTags() >> Observable.fromIterable(selectableTags).toList()
 
         def logs = [
                 new LogEntry("MyActivity", 1, "onCreate of Activity"),
@@ -128,7 +129,7 @@ class WoodStoragePresenterSpec extends RxSpecification {
                 new LogEntry("MyFragment", 1, "onCreate of MyFragment")
         ]
 
-        storage.load() >> Observable.from(logs)
+        storage.load() >> Flowable.fromIterable(logs)
 
         PresenterCache.put(R.id.dialog_tag_filter, tagFilterPresenter)
 

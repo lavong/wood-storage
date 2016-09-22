@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import rx.subjects.ReplaySubject;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.processors.ReplayProcessor;
+import io.reactivex.schedulers.Schedulers;
 
 public class FileStorage implements Storage {
 
@@ -28,7 +30,7 @@ public class FileStorage implements Storage {
 
     private File file;
     private StorageConfig storageConfig;
-    private ReplaySubject<LogEntry> replaySubject;
+    private ReplayProcessor<LogEntry> replayProcessor;
 
     FileStorage(String pathToFile) {
         this(new StorageConfig(MAX_LOG_COUNT, DELETE_COUNT, pathToFile));
@@ -45,8 +47,8 @@ public class FileStorage implements Storage {
         ensureMaxLineCount(lineCount);
         write(logEntry);
 
-        if (replaySubject != null) {
-            replaySubject.onNext(logEntry);
+        if (replayProcessor != null) {
+            replayProcessor.onNext(logEntry);
         }
     }
 
@@ -118,9 +120,9 @@ public class FileStorage implements Storage {
     }
 
     @Override
-    public Observable<LogEntry> load() {
-        if (replaySubject == null) {
-            replaySubject = ReplaySubject.create();
+    public Flowable<LogEntry> load() {
+        if (replayProcessor == null) {
+            replayProcessor = ReplayProcessor.create();
 
             Observable.fromCallable(new Callable<List<LogEntry>>() {
                 @Override
@@ -130,29 +132,29 @@ public class FileStorage implements Storage {
             })
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<List<LogEntry>, Observable<LogEntry>>() {
+                    .flatMap(new Function<List<LogEntry>, ObservableSource<LogEntry>>() {
                         @Override
-                        public Observable<LogEntry> call(List<LogEntry> logEntries) {
-                            return Observable.from(logEntries);
+                        public ObservableSource<LogEntry> apply(List<LogEntry> logEntries) throws Exception {
+                            return Observable.fromIterable(logEntries);
                         }
                     })
-                    .subscribe(new Action1<LogEntry>() {
+                    .subscribe(new Consumer<LogEntry>() {
                         @Override
-                        public void call(LogEntry logEntry) {
-                            replaySubject.onNext(logEntry);
+                        public void accept(LogEntry logEntry) throws Exception {
+                            replayProcessor.onNext(logEntry);
                         }
                     });
         }
 
-        return replaySubject.asObservable();
+        return replayProcessor;
     }
 
     @Override
     public void clear() {
         try {
-            if (replaySubject != null) {
-                replaySubject.onCompleted();
-                replaySubject = null;
+            if (replayProcessor != null) {
+                replayProcessor.onComplete();
+                replayProcessor = null;
             }
 
             if (file.delete()) {
