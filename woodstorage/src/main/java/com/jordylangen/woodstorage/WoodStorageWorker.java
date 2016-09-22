@@ -3,6 +3,7 @@ package com.jordylangen.woodstorage;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class WoodStorageWorker {
@@ -20,7 +21,7 @@ public class WoodStorageWorker {
         subscription = logObserver.subscribeOn(Schedulers.io())
                 .onBackpressureBuffer()
                 .observeOn(Schedulers.io())
-                .subscribe(new io.reactivex.functions.Consumer<LogEntry>() {
+                .subscribe(new Consumer<LogEntry>() {
                     @Override
                     public void accept(LogEntry logEntry) throws Exception {
                         storage.save(logEntry);
