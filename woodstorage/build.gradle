@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
+        versionName libraryVersion
     }
 
     buildTypes {
@@ -42,3 +42,4 @@ dependencies {
 }
 
 apply from: 'quality.gradle'
+apply from: 'deploy.gradle'

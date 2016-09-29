@@ -9,6 +9,9 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.1.2'
         classpath 'org.codehaus.groovy:groovy-android-gradle-plugin:1.0.0'
 
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -22,4 +25,24 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    bintrayRepository = 'maven'
+    bintrayName = 'woodstorage'
+    publishedGroupId = 'com.jordylangen.woodstorage'
+    artifact = 'woodstorage'
+    libraryName = 'woodstorage'
+    libraryDescription = 'Persistent storage for Timber including an overview activity'
+    libraryVersion = '0.1'
+    siteUrl = 'https://github.com/JordyLangen/wood-storage'
+    gitUrl = 'https://github.com/JordyLangen/wood-storage.git'
+
+    developerId = 'jordylangen'
+    developerName = 'Jordy Langen'
+    developerEmail = 'jordylangen@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
