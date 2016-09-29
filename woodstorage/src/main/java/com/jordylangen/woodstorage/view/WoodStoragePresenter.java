@@ -1,7 +1,5 @@
 package com.jordylangen.woodstorage.view;
 
-import android.support.v4.app.NavUtils;
-
 import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
 import com.jordylangen.woodstorage.WoodStorageFactory;
