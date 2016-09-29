@@ -27,9 +27,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-def properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 ext {
     bintrayRepository = 'maven'
     bintrayName = 'woodstorage'
