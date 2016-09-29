@@ -27,14 +27,17 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+def properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 ext {
     bintrayRepository = 'maven'
     bintrayName = 'woodstorage'
-    publishedGroupId = 'com.jordylangen.woodstorage'
+    publishedGroupId = 'com.jordylangen'
     artifact = 'woodstorage'
     libraryName = 'woodstorage'
     libraryDescription = 'Persistent storage for Timber including an overview activity'
-    libraryVersion = '0.1'
+    libraryVersion = '1.0-SNAPSHOT'
     siteUrl = 'https://github.com/JordyLangen/wood-storage'
     gitUrl = 'https://github.com/JordyLangen/wood-storage.git'
 

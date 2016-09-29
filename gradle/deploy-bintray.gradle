@@ -1,0 +1,35 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+version = libraryVersion
+
+def getBintrayUsername() {
+    return System.getenv("BINTRAY_USER") != null ? System.getenv("BINTRAY_USER") : ""
+}
+
+def getBintrayApiKey() {
+    return System.getenv("BINTRAY_APIKEY") != null ? System.getenv("BINTRAY_APIKEY") : ""
+}
+
+bintray {
+    user = getBintrayUsername()
+    key = getBintrayApiKey()
+
+    configurations = ['archives']
+
+    pkg {
+        repo = bintrayRepository
+        name = bintrayName
+        licenses = allLicenses
+        vcsUrl = gitUrl
+        publish = true
+        publicDownloadNumbers = true
+
+        version {
+            desc = libraryDescription
+        }
+    }
+}

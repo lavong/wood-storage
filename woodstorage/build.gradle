@@ -41,5 +41,6 @@ dependencies {
     testCompile 'org.jmockit:jmockit:1.25'
 }
 
-apply from: 'quality.gradle'
-apply from: 'deploy.gradle'
+apply from: rootProject.file('gradle/quality.gradle')
+apply from: rootProject.file('gradle/deploy-sonatype.gradle')
+apply from: rootProject.file('gradle/deploy-bintray.gradle')
