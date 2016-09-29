@@ -43,6 +43,7 @@ public class TagFilterPresenter implements TagFilterContract.Presenter {
     public void teardown() {
         selectedTagsPublishSubject.onComplete();
         dispose();
+        view = null;
     }
 
     private void dispose() {

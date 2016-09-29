@@ -1,5 +1,7 @@
 package com.jordylangen.woodstorage.view;
 
+import android.support.v4.app.NavUtils;
+
 import com.jordylangen.woodstorage.LogEntry;
 import com.jordylangen.woodstorage.R;
 import com.jordylangen.woodstorage.WoodStorageFactory;
@@ -40,6 +42,7 @@ class WoodStoragePresenter implements WoodStorageContract.Presenter {
     public void teardown() {
         dispose(logEntriesSubscription);
         dispose(selectedTagsSubscription);
+        view = null;
     }
 
     @Override
