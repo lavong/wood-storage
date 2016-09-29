@@ -19,7 +19,6 @@ def getSnapshotRepositoryUrl() {
 }
 
 def getRepositoryUsername() {
-    println(System.getenv("SONATYPE_NEXUS_USERNAME"))
     return System.getenv("SONATYPE_NEXUS_USERNAME") != null ? System.getenv("SONATYPE_NEXUS_USERNAME") : ""
 }
 
