@@ -3,7 +3,6 @@ package com.jordylangen.woodstorage;
 import android.content.Context;
 
 import io.reactivex.processors.PublishProcessor;
-import io.reactivex.subjects.PublishSubject;
 
 public final class WoodStorageFactory {
 

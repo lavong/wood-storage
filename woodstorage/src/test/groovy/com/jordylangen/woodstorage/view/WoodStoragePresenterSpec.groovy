@@ -121,7 +121,9 @@ class WoodStoragePresenterSpec extends RxSpecification {
         ]
 
         def tagFilterPresenter = Mock(TagFilterContract.Presenter)
-        tagFilterPresenter.observeSelectedTags() >> Observable.fromIterable(selectableTags).toList()
+        tagFilterPresenter.observeSelectedTags() >> Observable.fromIterable(selectableTags)
+                .toList()
+                .toObservable()
 
         def logs = [
                 new LogEntry("MyActivity", 1, "onCreate of Activity"),
